@@ -45,7 +45,7 @@ func main() {
 		return c.String(http.StatusOK, "Hello World!")
 	})
 
-	e.POST("/api/upload", handler.HandelPutObjectPresignURL(S3))
+	e.POST("/api/upload", handler.HandelPutImage(S3))
 	e.GET("/images/:key", handler.HandelGetImage())
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
