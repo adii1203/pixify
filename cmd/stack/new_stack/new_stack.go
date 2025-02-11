@@ -74,18 +74,22 @@ func NewPixifyStack(scope constructs.Construct, id string, props *PixifyStackPro
 			"transformImageBucketName": transformedImageBucket.BucketName(),
 		},
 		LogRetention: awslogs.RetentionDays_ONE_DAY,
+		Architecture: awslambda.Architecture_ARM_64(),
 
-		Code: awslambda.AssetCode_FromAsset(jsii.String("./../../go_lambda.zip"), &awss3assets.AssetOptions{}),
+		Code: awslambda.AssetCode_FromAsset(jsii.String("./../lambda/go_lambda.zip"), &awss3assets.AssetOptions{}),
 	})
 
 	lambdaUrl := transformerFunc.AddFunctionUrl(&awslambda.FunctionUrlOptions{})
 
+	rawImageBucket.GrantRead(transformerFunc, "*")
+	transformedImageBucket.GrantWrite(transformerFunc, "*", nil)
 	s3RawImagePolicy := awsiam.NewPolicyStatement(&awsiam.PolicyStatementProps{
 		Actions: &[]*string{
 			jsii.String("s3:GetObject"),
+			jsii.String("s3:ListBucket"),
 		},
 		Resources: &[]*string{
-			jsii.String(fmt.Sprintf("arn:aws:s3:::%v/*", *rawImageBucket.BucketName())),
+			jsii.String("arn:aws:s3:::pixify-raw-images-bucket/*"),
 		},
 	})
 
@@ -126,23 +130,12 @@ func NewPixifyStack(scope constructs.Construct, id string, props *PixifyStackPro
 	})
 
 	urlRewriteFunc := awscloudfront.NewFunction(stack, jsii.String("UrlRewriteFunction"), &awscloudfront.FunctionProps{
-		Code: awscloudfront.FunctionCode_FromInline(jsii.String(`
-		
-	async function handler(event) {
-		var request = event.request;
-		var uri = request.uri;
-		
-		if (uri.endsWith('/test')) {
-			var p = uri.replace('/test', '/profile.webp');
-			request.uri = p
-		} 
-
-		return request;
-	}
-		`)),
+		Code: awscloudfront.FunctionCode_FromFile(&awscloudfront.FileCodeOptions{
+			FilePath: jsii.String("./url_rewrite/urlRewrite.js"),
+		}),
 		FunctionName: jsii.String("urlRewriteFunction"),
+		Runtime:      awscloudfront.FunctionRuntime_JS_2_0(),
 	})
-	// awscloudfront.NewOriginA
 	cloudFrontDist := awscloudfront.NewDistribution(stack, jsii.String("CloudfrontDistribution"), &awscloudfront.DistributionProps{
 		DefaultBehavior: &awscloudfront.BehaviorOptions{
 			Origin: cloudFrontOriginGroup,
