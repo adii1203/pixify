@@ -7,5 +7,5 @@ import (
 
 func main() {
 	db := db.Init()
-	db.AutoMigrate(&data.File{})
+	db.Db.AutoMigrate(&data.File{})
 }

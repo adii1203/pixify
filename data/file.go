@@ -1,6 +1,8 @@
 package data
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type File struct {
 	gorm.Model
@@ -11,4 +13,5 @@ type File struct {
 	Size     uint64 `json:"size"`
 	Width    uint64 `json:"width"`
 	Height   uint64 `json:"height"`
+	Url      string `json:"url"`
 }
