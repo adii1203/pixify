@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/adii1203/pixify/db"
 	"github.com/adii1203/pixify/handler"
 	"github.com/adii1203/pixify/storage"
 	"github.com/adii1203/pixify/utils"
@@ -22,6 +23,9 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
+
+	// initializing database
+	db := db.Init()
 
 	// initializing s3 client
 	fmt.Println("initializing s3 client...")
@@ -45,7 +49,7 @@ func main() {
 		return c.String(http.StatusOK, "Hello World!")
 	})
 
-	e.POST("/api/upload", handler.HandelPutImage(S3))
+	e.POST("/api/upload", handler.HandlePutImage(S3, db))
 	e.GET("/images/:key", handler.HandelGetImage())
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
@@ -54,6 +58,7 @@ func main() {
 	// start server
 	go func() {
 		if err := e.Start(":8080"); err != nil && err != http.ErrServerClosed {
+			log.Print(err.Error())
 			e.Logger.Fatal("shutting down the server")
 		}
 	}()
