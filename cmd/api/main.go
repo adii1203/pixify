@@ -43,7 +43,9 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"status": "ok"})
 	})
-	e.GET("/health", func(c echo.Context) error {
+
+	// health check for uptime robot
+	e.HEAD("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"status": "ok"})
 	})
 
