@@ -41,10 +41,10 @@ func main() {
 	}))
 
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello World!")
+		return c.JSON(http.StatusOK, map[string]string{"status": "ok"})
 	})
 	e.GET("/health", func(c echo.Context) error {
-		return c.String(http.StatusOK, "OK")
+		return c.JSON(http.StatusOK, map[string]string{"status": "ok"})
 	})
 
 	e.POST("/api/upload", handler.HandlePutImage(S3, db))
