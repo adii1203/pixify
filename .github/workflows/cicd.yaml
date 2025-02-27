@@ -1,0 +1,18 @@
+name: pixify
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Login to Dockerhub
+        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+      - name: Build Docker image
+        run: docker build -t adii1203/pixify .
+      - name: Push Docker image
+        run: docker push adii1203/pixify:latest
