@@ -13,6 +13,6 @@ jobs:
       - name: Login to Dockerhub
         run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
       - name: Build Docker image
-        run: docker build -t adii1203/pixify .
+        run: docker build -t adii1203/pixify:latest .
       - name: Push Docker image
-        run: docker push adii1203/pixify:prod
+        run: docker push adii1203/pixify:latest
