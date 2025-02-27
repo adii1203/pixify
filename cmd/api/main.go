@@ -43,6 +43,9 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello World!")
 	})
+	e.GET("/health", func(c echo.Context) error {
+		return c.String(http.StatusOK, "OK")
+	})
 
 	e.POST("/api/upload", handler.HandlePutImage(S3, db))
 	e.GET("/images/:key", handler.HandelGetImage())
