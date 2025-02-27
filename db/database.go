@@ -38,8 +38,13 @@ func connectDatabase() (*gorm.DB, error) {
 }
 
 func Init() *GormDB {
-	if err := godotenv.Load(); err != nil {
-		log.Panic("error loading env", err)
+	if os.Getenv("ENV") == "prod" {
+
+	} else {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatalf("Error loading .env file")
+		}
 	}
 	db, err := connectDatabase()
 	if err != nil {
