@@ -15,4 +15,4 @@ jobs:
       - name: Build Docker image
         run: docker build -t adii1203/pixify .
       - name: Push Docker image
-        run: docker push adii1203/pixify:latest
+        run: docker push adii1203/pixify:prod
