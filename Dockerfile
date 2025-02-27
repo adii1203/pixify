@@ -38,6 +38,6 @@ WORKDIR /app
 RUN apt update && apt install -y libvips-dev && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/main .
-EXPOSE 8080
+EXPOSE 8000
 
 CMD ["./main"]
