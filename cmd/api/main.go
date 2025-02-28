@@ -41,7 +41,7 @@ func main() {
 	}))
 
 	e.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"status": "ok"})
+		return c.JSON(http.StatusOK, map[string]string{"status": "Hello World"})
 	})
 
 	// health check for uptime robot
